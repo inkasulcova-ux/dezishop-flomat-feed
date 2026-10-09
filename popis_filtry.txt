@@ -1,0 +1,27 @@
+# Filtry popisu produktu
+# ----------------------
+# Kazdy radek = jeden regularni vyraz. Veta v popisu, ktera vzor obsahuje,
+# se z popisu vyhodi jeste pred zapisem do XML. Porovnava se bez ohledu na
+# velikost pismen.
+#
+# K cemu to je: popisy od FLOMATu jsou psane z pohledu FLOMATu a obcas
+# odkazuji na jejich vlastni sortiment ("...ktere take nabizime"), coz na
+# dezishop.cz nedava smysl.
+#
+# Radky zacinajici # jsou komentare. Prazdne radky se ignoruji.
+# Co se vyhodilo, najdete po kazdem behu v report.csv a ve vypisu skriptu.
+
+# odkazy na sortiment dodavatele
+kter[eéá][^.!?]{0,40}(tak[eé] )?nab[ií]z[ií]me
+nab[ií]z[ií]me (i|tak[eé]|dale|d[aá]le)
+d[aá]le (tak[eé] )?nab[ií]z[ií]me
+v (na[sš][ií]|na[sš]em) (nab[ií]dce|sortimentu|e-?shopu)
+nalezn[eě]te (u n[aá]s|v na[sš])
+prod[aá]v[aá]me (i|tak[eé])
+k rohozi prod[aá]v[aá]me
+
+# dopravni a obchodni podminky dodavatele
+cenu dopravy
+cena dopravy
+po p[rř]ijet[ií] objedn[aá]vky v[aá]s budeme kontaktovat
+zas[ií]l[aá]me
