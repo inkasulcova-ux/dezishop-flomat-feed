@@ -1,0 +1,47 @@
+name: Aktualizace feedu pro Shoptet
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stahnout repozitar
+        uses: actions/checkout@v4
+
+      - name: Nastavit Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Nainstalovat zavislosti
+        run: pip install -r requirements.txt
+
+      - name: Vygenerovat XML
+        env:
+          FLOMAT_FEED_URL: ${{ secrets.FLOMAT_FEED_URL }}
+          SHOPTET_EXPORT_PATH: shoptet_export.xlsx
+          OUTPUT_XML_PATH: docs/shoptet_import.xml
+          REPORT_PATH: docs/report.csv
+          EXCLUDE_CODES: ${{ vars.EXCLUDE_CODES }}
+          SYNC_DESCRIPTION: "true"
+          PRICE_COEFFICIENT: "1.0"
+        run: python generate_import.py
+
+      - name: Ulozit zmeny
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add docs/shoptet_import.xml docs/report.csv
+          if git diff --staged --quiet; then
+            echo "Zadne zmeny ve feedu, necommituji."
+          else
+            git commit -m "Aktualizace feedu $(date +'%d.%m.%Y %H:%M')"
+            git push
+          fi
